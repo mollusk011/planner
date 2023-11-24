@@ -1,0 +1,69 @@
+PlanSpace:
+  StartState:
+    state:
+      customer_order_received: False
+      order_validated: False
+      payment_processed: False
+      kitchen_notified: False
+      order_prepared: False
+      order_dispatched: False
+      order_delivered: False
+  GoalState:
+    state:
+      "state.order_delivered == True"
+  Actions:
+    - Action:
+        name: receive_order
+        cost: 1
+        pre_conditions:
+          - state.customer_order_received == False
+        post_effects:
+          - state.customer_order_received = True
+    - Action:
+        name: validate_order
+        cost: 1
+        pre_conditions:
+          - state.customer_order_received == True
+          - state.order_validated == False
+        post_effects:
+          - state.order_validated = True
+    - Action:
+        name: process_payment
+        cost: 1
+        pre_conditions:
+          - state.order_validated == True
+          - state.payment_processed == False
+        post_effects:
+          - state.payment_processed = True
+    - Action:
+        name: notify_kitchen
+        cost: 1
+        pre_conditions:
+          - state.payment_processed == True
+          - state.kitchen_notified == False
+        post_effects:
+          - state.kitchen_notified = True
+    - Action:
+        name: prepare_order
+        cost: 1
+        pre_conditions:
+          - state.kitchen_notified == True
+          - state.order_prepared == False
+        post_effects:
+          - state.order_prepared = True
+    - Action:
+        name: dispatch_order
+        cost: 1
+        pre_conditions:
+          - state.order_prepared == True
+          - state.order_dispatched == False
+        post_effects:
+          - state.order_dispatched = True
+    - Action:
+        name: deliver_order
+        cost: 1
+        pre_conditions:
+          - state.order_dispatched == True
+          - state.order_delivered == False
+        post_effects:
+          - state.order_delivered = True
