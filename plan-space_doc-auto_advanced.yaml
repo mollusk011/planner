@@ -1,0 +1,87 @@
+PlanSpace:
+    StartState:
+        state:
+            document_size: 10
+            extract_labels_in_batch: False
+            document_fetched: False
+            ocr_document: False
+            labels_extracted: False
+            rules_applied: False
+            data_captured: False
+            data_stored: False
+            document_processed: False
+    GoalState:
+        state:
+          state.document_processed == True
+    Actions:
+      - Action:
+          name: fetch_document
+          cost: 5
+          pre_conditions:
+            - state.document_processed == False
+            - state.document_fetched == False
+          post_effects:
+            - state.document_fetched = True
+      - Action:
+          name: ocr_document
+          cost: 1
+          pre_conditions:
+            - state.document_size < 100
+            - state.ocr_document == False
+            - state.document_fetched ==  True
+          post_effects:
+            - state.ocr_document = True
+      - Action:
+          name: ocr_large_document
+          cost: 100
+          pre_conditions:
+            - state.document_size >= 100
+            - state.ocr_document == False and state.document_fetched ==  True
+          post_effects:
+            - state.ocr_document = True
+            - state.extract_labels_in_batch =  True
+      - Action:
+          name: extract_labels
+          cost: 1
+          pre_conditions:
+            - state.extract_labels_in_batch == False
+            - state.ocr_document == True
+            - state.labels_extracted == False
+          post_effects:
+            - state.labels_extracted =  True
+      - Action:
+          name: extract_labels_in_batch
+          cost: 1
+          pre_conditions:
+            - state.extract_labels_in_batch == True
+            - state.ocr_document == True
+            - state.labels_extracted == False
+          post_effects:
+            - "if(True): 
+                    state.labels_extracted = True
+              "
+      - Action:
+          name: apply_rules
+          cost: 1
+          pre_conditions:
+            - state.labels_extracted == True
+            - state.rules_applied == False
+          post_effects:
+            - state.rules_applied =  True
+      - Action:
+          name: capture
+          cost: 1
+          pre_conditions:
+            - state.rules_applied == True
+            - state.data_captured == False
+          post_effects:
+            - state.data_captured =  True
+      - Action:
+          name: storage
+          cost: 1
+          pre_conditions:
+            - state.data_captured == True
+            - state.data_stored == False
+          post_effects:
+            - state.data_stored =  True
+            - state.document_processed =  True
