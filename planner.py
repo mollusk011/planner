@@ -5,32 +5,32 @@ from copy import deepcopy
 import heapq
 
 """
-Planner Domain Model:
-
-Plan Space: 
-- A set of actions that can be performed to achieve a goal.  
-- A start state that represents the the starting state of the plan space. 
-- A goal state that represents the desired state of the plan space.
-- YAML defined.
-
-Action:
-- A set of preconditions that must be met before an action can be performed.
-- A set of post effects that are the result of performing an action.
-- A cost that represents the cost of performing an action.
-
-State:
-- A set of variables that represent the current state of the world.  
-- These variables can be used to determine if an action can be performed.
-
-Planner:
-- Creates plans by searching through the plan space to find a sequence of actions that will achieve the goal state.
-- Uses a cost function to determine the cost of a plan.
-- If there are multiple plans that achieve the goal state, the planner will return the plan with the lowest cost.
-- Uses the A* search algorithm to find the lowest cost plan.
-
-Plan
-- A sequence of actions that achieve the goal state.
-- The cost of a plan is the sum of the cost of each action in the plan.
+    Planner Domain Model:
+    
+    Plan Space: 
+    - A set of actions that can be performed to achieve a goal.  
+    - A start state that represents the the starting state of the plan space. 
+    - A goal state that represents the desired state of the plan space.
+    - YAML defined.
+    
+    Action:
+    - A set of preconditions that must be met before an action can be performed.
+    - A set of post effects that are the result of performing an action.
+    - A cost that represents the cost of performing an action.
+    
+    State:
+    - A set of variables that represent the current state of the world.  
+    - These variables can be used to determine if an action can be performed.
+    
+    Planner:
+    - Creates plans by searching through the plan space to find a sequence of actions that will achieve the goal state.
+    - Uses a cost function to determine the cost of a plan.
+    - If there are multiple plans that achieve the goal state, the planner will return the plan with the lowest cost.
+    - createPlan Uses the A* search algorithm to find the lowest cost plan.
+    
+    Plan
+    - A sequence of actions that achieve the goal state.
+    - The cost of a plan is the sum of the cost of each action in the plan.
 
 """
 
@@ -88,6 +88,10 @@ class Planner(PlanSearch):
                 return False
         return True
 
+    """
+    Returns a list of succeeding (ie. following) actions based on the current state.
+    It uses the 'post_effects' of the action to simulate the effect of the action on the current state.       
+    """
     def getSuccessors(self, current_state):
         successors = []
         for action in self.actions:
@@ -105,8 +109,57 @@ class Planner(PlanSearch):
                 return False
         return True
 
-def nullHeuristic(state, planner=None):
-    return 0
+    def heuristic(self, state):
+        return 0
+    def createPlan(self):
+        # Typical A* implementation
+        
+        heuristic = self.heuristic
+
+        closed = set()
+
+        # from util import PriorityQueue
+        fringe = PriorityQueue()
+
+        STATE = 0
+        ACT = 1
+        COST = 2
+        DATA = 3
+
+        node = self.getStartState()
+        plan = []
+        plan_cost = []
+
+        fringe.push((node, plan, plan_cost), heuristic(self.getStartState()))
+
+        while True:
+            if fringe.isEmpty():
+                return []
+                break
+
+            popped = fringe.pop()
+            node = popped[0]
+            plan = popped[1]
+            plan_cost = popped[2]
+
+            if self.isGoalState(node):
+                return plan
+                break
+
+            if not node in closed:
+                closed.add(node)
+                children = self.getSuccessors(node)
+
+                for child in children:
+                    sum_plan_cost = sum(plan_cost)
+                    # child[ACT][DATA] = child[STATE]
+                    fringe.push((child[STATE], plan + deepcopy([child[ACT]]),
+                                 plan_cost + [child[COST]]),
+                                heuristic(child[STATE]) + sum(plan_cost + [child[COST]])
+                                )  # according to comments priorityqueue prioritizes the lowest priority. depth will make the deepest node the hightest priority
+
+
+
 
 
 class PriorityQueue:
@@ -140,50 +193,3 @@ class PriorityQueue:
     def isEmpty(self):
         return len(self.heap) == 0
 
-def aStarSearch(planner, heuristic=nullHeuristic):
-
-    #Typical A* implementation
-    #written by ML years ago
-
-    closed = set()
-
-    #from util import PriorityQueue
-    fringe = PriorityQueue()
-
-    STATE = 0
-    ACT = 1
-    COST = 2
-    DATA = 3
-
-    node = planner.getStartState()
-    plan = []
-    plan_cost = []
-
-    fringe.push((node, plan, plan_cost), heuristic(planner.getStartState(), planner))
-
-    while True:
-        if fringe.isEmpty():
-            return []
-            break
-
-        popped = fringe.pop()
-        node = popped[0]
-        plan = popped[1]
-        plan_cost = popped[2]
-
-        if planner.isGoalState(node):
-            return plan
-            break
-
-
-        if not node in closed:
-            closed.add(node)
-            children = planner.getSuccessors(node)
-
-            for child in children:
-                sum_plan_cost = sum(plan_cost)
-                # child[ACT][DATA] = child[STATE]
-                fringe.push((child[STATE],plan + deepcopy([child[ACT]]),
-                                    plan_cost + [child[COST]]),
-                                    heuristic(child[STATE], planner) + sum(plan_cost + [child[COST]])
-                            )  # according to comments priorityqueue prioritizes the lowest priority. depth will make the deepest node the hightest priority

@@ -44,7 +44,7 @@ class TestPlanner(unittest.TestCase):
         plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Basic")
 
@@ -59,7 +59,7 @@ class TestPlanner(unittest.TestCase):
         start_state["document_processed"] = True
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Goal State already True")
         self.assertEqual(sum([step.cost for step in plan]), 0, "Plan cost is zero")
@@ -73,7 +73,7 @@ class TestPlanner(unittest.TestCase):
         start_state["document_fetched"] = True
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "First action already true")
         self.assertEqual(sum([step.cost for step in plan]), 5, "Plan cost is 5")
@@ -85,7 +85,7 @@ class TestPlanner(unittest.TestCase):
         plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Advanced")
 
@@ -107,7 +107,7 @@ class TestPlanner(unittest.TestCase):
         plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Advanced")
 
@@ -131,7 +131,7 @@ class TestPlanner(unittest.TestCase):
         plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Taco Plan")
 
@@ -151,7 +151,7 @@ class TestPlanner(unittest.TestCase):
         plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Taco Advanced Plan with both pickup and delivery options")
 
@@ -168,7 +168,7 @@ class TestPlanner(unittest.TestCase):
         start_state["delivery_option_chosen"] = True
 
         planner = Planner(plan_space, self.mycostFn)
-        plan = aStarSearch(planner)
+        plan = planner.createPlan()
 
         self.print_plan(plan, "Taco Advanced Plan - Delivery Chosen")
 
