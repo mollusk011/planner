@@ -1,5 +1,4 @@
 
-from plan_search_abc import PlanSearch
 from copy import deepcopy
 
 import heapq
@@ -70,7 +69,7 @@ class PlanSpace:
 
 
 
-class Planner(PlanSearch):
+class Planner:
 
     def __init__(self, plan_space, costFn):
         self.start_state = plan_space.start_state
