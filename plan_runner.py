@@ -7,6 +7,18 @@ from plugins.doc_auto_plugins import *
 import copy
 import yaml
 
+"""
+    Planner Runner:
+
+    Wraps a planner and provides a method to execute the plan.
+    
+    TODO:
+    - add a run id
+    - persist the plan to a file
+    - add meta data to a run like time and date for every action
+    - persist the run meta data to some kind of storage
+
+"""
 
 
 class PlanRunner:
