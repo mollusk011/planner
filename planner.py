@@ -87,6 +87,13 @@ class Planner:
                 return False
         return True
 
+
+    def getNextStep(self, state):
+        self.start_state = state
+        plan = self.createPlan()
+        action = plan[0]
+        return action
+
     """
     Returns a list of succeeding (ie. following) actions based on the current state.
     It uses the 'post_effects' of the action to simulate the effect of the action on the current state.       

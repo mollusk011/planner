@@ -173,6 +173,21 @@ class TestPlanner(unittest.TestCase):
         self.print_plan(plan, "Taco Advanced Plan - Delivery Chosen")
 
         self.assertEqual(sum([step.cost for step in plan]), 7, "Plan cost is 7")
+        
+    def test_08_taco_advanced_planner_pickup_chosen_ai_generated(self):
+        data = self.taco_advanced_data.copy()
+        # Test 1: Taco Plan Space
+        start_state = State(**data['PlanSpace']['StartState']['state'])
+        plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
+
+        start_state["pickup_option_chosen"] = True
+
+        planner = Planner(plan_space, self.mycostFn)
+        plan = planner.createPlan()
+
+        self.print_plan(plan, "Taco Advanced Plan - Pickup Chosen")
+
+        self.assertEqual(sum([step.cost for step in plan]), 6, "Plan cost is 7")
 
 if __name__ == '__main__':
     unittest.main()
