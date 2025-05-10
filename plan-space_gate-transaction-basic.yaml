@@ -1,0 +1,66 @@
+PlanSpace:
+    StartState:
+        state:
+            trailer_number_fetched: False
+            truck_number_fetched: False
+            authorized: False
+            gate_lifted: False
+            transaction_recorded: False
+    GoalState:
+        state:
+          state.transaction_recorded == True
+    Actions:
+      - Action:
+          name: read_trailer_number
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == False
+          post_effects:
+            - state.trailer_number_fetched = True
+      - Action:
+          name: read_truck_number
+          cost: 1
+          pre_conditions:
+            - state.truck_number_fetched == False
+          post_effects:
+            - state.truck_number_fetched = True
+      - Action:
+          name: check_authorization
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == True
+            - state.truck_number_fetched == True
+            - state.authorized == False
+          post_effects:
+            - state.authorized =  True
+      - Action:
+          name: check_authorization_cheap
+          cost: 2
+          pre_conditions:
+            - state.trailer_number_fetched == True
+            - state.truck_number_fetched == True
+            - state.authorized == False
+          post_effects:
+            - state.authorized =  True
+      - Action:
+          name: lift_gate
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == True
+            - state.truck_number_fetched == True
+            - state.authorized == True
+            - state.gate_lifted == False
+          post_effects:
+            - state.gate_lifted =  True
+      - Action:
+          name: record_transaction
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == True
+            - state.truck_number_fetched == True
+            - state.authorized == True
+            - state.gate_lifted == True
+            - state.transaction_recorded == False
+          post_effects:
+            - state.transaction_recorded =  True
+

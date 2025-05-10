@@ -1,0 +1,60 @@
+PlanSpace:
+    StartState:
+        state:
+            trailer_number_fetched: False
+            unit_number_fetched: False
+            company_name_fetched: False
+            tenant_status_fetched: False
+            is_tenant: False
+            seal_number_fetched: False
+            access_allowed: False
+    GoalState:
+        state:
+            state.access_allowed == True
+    Actions:
+      - Action:
+          name: show_card_trailer_number
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == False
+          post_effects:
+            - state.trailer_number_fetched = True
+      - Action:
+          name: show_company_name_card
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == True
+            - state.company_name_fetched == False
+          post_effects:
+            - state.company_name_fetched = True
+      - Action:
+          name: fetch_tenant_status
+          cost: 1
+          pre_conditions:
+            - state.company_name_fetched == True
+            - state.tenant_status_fetched == False
+          post_effects:
+            - state.tenant_status_fetched = True
+      - Action:
+          name: show_card_seal_number
+          cost: 1
+          pre_conditions:
+            - state.tenant_status_fetched == True
+            - state.seal_number_fetched == False
+            - state.is_tenant == False
+          post_effects:
+            - state.seal_number_fetched = True
+            - state.access_allowed = True
+      - Action:
+          name: show_card_unit_number
+          cost: 1
+          pre_conditions:
+            - state.trailer_number_fetched == True
+            - state.unit_number_fetched == False
+            - state.is_tenant == True
+          post_effects:
+            - state.unit_number_fetched = True
+            - state.access_allowed = True
+
+
+

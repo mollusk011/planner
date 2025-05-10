@@ -1,0 +1,45 @@
+PlanSpace:
+    StartState:
+        state:
+            card_a_shown: False
+            card_b_shown: False
+            card_c_shown: False
+            card_d_shown: False
+            truck_color: None
+    GoalState:
+        state:
+            state.card_c_shown == True or state.card_d_shown == True
+    Actions:
+      - Action:
+          name: show_card_a
+          cost: 1
+          pre_conditions:
+            - state.card_a_shown == False
+          post_effects:
+            - state.card_a_shown = True
+      - Action:
+          name: show_card_b
+          cost: 1
+          pre_conditions:
+            - state.card_a_shown == True
+            - state.card_b_shown == False
+          post_effects:
+            - state.card_b_shown = True
+      - Action:
+          name: show_card_c
+          cost: 1
+          pre_conditions:
+            - state.card_b_shown == True
+            - state.card_c_shown == False
+            - state.truck_color == 'blue'
+          post_effects:
+            - state.card_c_shown = True
+      - Action:
+          name: show_card_d
+          cost: 1
+          pre_conditions:
+            - state.card_b_shown == True
+            - state.card_d_shown == False
+            - state.truck_color == 'red'
+          post_effects:
+            - state.card_d_shown = True

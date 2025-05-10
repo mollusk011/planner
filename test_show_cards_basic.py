@@ -1,0 +1,74 @@
+import sys
+import unittest
+import yaml
+
+
+from planner import *
+
+class TestPlanner(unittest.TestCase):
+
+    def setUp(self):
+        file_path = 'plan-space_show_cards_basic.yaml'
+
+        with open(file_path, 'r') as file:
+            self.basic_data = yaml.safe_load(file)
+
+
+    def mycostFn(self, state, action):
+        return action.cost
+
+    def print_plan(self, plan, start_state, msg=""):
+        print("\nPLAN ", msg, ":\n")
+
+        print("Start State: ")
+
+        for(k, v) in start_state.__dict__.items():
+            print(f"{k}: {v}")
+
+        print("\n")
+
+        for step, p in enumerate(plan, start=1):
+            print(f"PLAN STEP {step}:", {'action': p.name, 'cost': p.cost})
+        print("Total Plan Cost: ", sum([step.cost for step in plan]))
+
+    def test_01_basic_planner_happy_path(self):
+        data = self.basic_data.copy()
+        # Test 1: Basic Plan Space
+        start_state = State(**data['PlanSpace']['StartState']['state'])
+        plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
+
+        planner = Planner(plan_space, self.mycostFn)
+
+        start_state["truck_color"] = "blue"
+
+        plan = planner.createPlan()
+
+        self.print_plan(plan, start_state, "Basic")
+
+        #self.assertEqual(sum([step.cost for step in plan]), 5, "Plan cost is 5")
+
+        self.assertGreater(len(plan), 0, "Plan has at least one step")
+
+
+    def test_01_basic_truck_red(self):
+        data = self.basic_data.copy()
+        # Test 1: Basic Plan Space
+        start_state = State(**data['PlanSpace']['StartState']['state'])
+        plan_space = PlanSpace(start_state, data['PlanSpace']['GoalState'], data['PlanSpace']['Actions'])
+
+        planner = Planner(plan_space, self.mycostFn)
+
+        start_state["truck_color"] = "red"
+
+        plan = planner.createPlan()
+
+
+
+        self.print_plan(plan, start_state, "Basic")
+
+        #self.assertEqual(sum([step.cost for step in plan]), 5, "Plan cost is 5")
+
+        self.assertGreater(len(plan), 0, "Plan has at least one step")
+
+if __name__ == '__main__':
+    unittest.main()
